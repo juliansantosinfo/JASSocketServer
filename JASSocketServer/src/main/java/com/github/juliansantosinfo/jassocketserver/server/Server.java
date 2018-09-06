@@ -17,7 +17,6 @@
 package com.github.juliansantosinfo.jassocketserver.server;
 
 import com.github.juliansantosinfo.jassocketserver.connection.ConnectionManager;
-import com.github.juliansantosinfo.jassocketserver.ui.Console;
 import com.github.juliansantosinfo.jassocketserver.ui.SystemTray;
 import com.github.juliansantosinfo.jasdatehour.JASDateHour;
 import java.io.File;
@@ -28,7 +27,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,36 +34,35 @@ import javax.swing.JOptionPane;
  */
 public class Server extends Thread {
 
-    // Variaveis globais.
+    // Variables.
     private Socket connection;
     private ServerSocket serverSocket;
     private ServerConfig serverConfig;
     private ServerManagerConnection serverManagerConnection;
-
     private boolean started;
-
     private List<ConnectionManager> connectionList;
-    private List<Console> consoleList;
-
     private int port;
     private int connectionLimit;
     private File logFile;
     private String logPath;
     private PrintWriter pwLogFile;
-
     private Object keyToReadLog = new Object();
 
-    // Contrutores.
+    /**
+     * Constructor.
+     */
     public Server() {
-        
-        // Carrega arquivo de configuração.
+
+        // Creates an instance of the ServerConfig class to manage configuration file.
         serverConfig = new ServerConfig();
-        
+
+        // Load ini file.
         if (serverConfig.loadIniFile()) {
             port = serverConfig.getPort();
             connectionLimit = serverConfig.getConnectionLimit();
             logPath = serverConfig.getLogPath();
         } else {
+            addToLog("FAILED TO READ CONFIGURATION FILE");
             return;
         }
 
@@ -84,8 +81,8 @@ public class Server extends Thread {
         }
 
         // Inicia variaveis.
-        this.started = false;
-        this.connectionList = new ArrayList<>();
+        started = false;
+        connectionList = new ArrayList<>();
 
         // Inicia TrayIcon.
         SystemTray.initSystemTraySwing(this);
@@ -127,6 +124,14 @@ public class Server extends Thread {
         this.port = port;
     }
 
+    public int getConnectionLimit() {
+        return connectionLimit;
+    }
+
+    public void setConnectionLimit(int connectionLimit) {
+        this.connectionLimit = connectionLimit;
+    }
+
     public boolean isStarted() {
         return started;
     }
@@ -141,14 +146,6 @@ public class Server extends Thread {
 
     public void setConnectionList(List<ConnectionManager> connectionList) {
         this.connectionList = connectionList;
-    }
-
-    public List<Console> getConsoleList() {
-        return consoleList;
-    }
-
-    public void setConsoleList(List<Console> consoleList) {
-        this.consoleList = consoleList;
     }
 
     public File getLogFile() {
@@ -215,7 +212,7 @@ public class Server extends Thread {
 
                     // Registra Log.
                     addToLog("CLOSING CONNECTION: " + connectionList.get(0).getConnection().toString());
-                    addToLog(connectionList.get(0).getConnection().getInetAddress().getHostName() + "CLOSED.");
+                    addToLog(connectionList.get(0).getConnection().getInetAddress().getHostName() + " CLOSED.");
                 }
 
                 if (!serverSocket.isClosed()) {

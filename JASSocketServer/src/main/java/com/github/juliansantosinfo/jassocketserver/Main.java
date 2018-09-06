@@ -30,12 +30,10 @@ public class Main {
     
     /**
      * @param args the command line arguments
+     * @throws java.lang.InterruptedException
      */
     public static void main(String[] args) throws InterruptedException {
         // TODO code application logic here
-        javax.swing.JOptionPane.showMessageDialog(null, "MAIN");
-        javax.swing.JOptionPane.showMessageDialog(null, JAR_FILE);
-        javax.swing.JOptionPane.showMessageDialog(null, ROOT_PATH);
         new Server();
     }
 

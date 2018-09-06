@@ -36,18 +36,22 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 /**
- *
+ * <code>SystemTray<code> is a class for add icon to the system tray.
  * @author Julian A. Santos
  */
 public class SystemTray {
-
+    
+    /**
+     * Add icon to the system tray by using components from the java.awt package.
+     * @param server 
+     */
     public static void initSystemTray(Server server) {
 
         try {
 
             PopupMenu popupMenu = new PopupMenu("Menu");
 
-            MenuItem menuItemStart = new MenuItem();
+            MenuItem menuItemStart = new MenuItem("Start");
             menuItemStart.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -76,6 +80,7 @@ public class SystemTray {
                     EventQueue.invokeLater(new Client());
                 }
             });
+            
             MenuItem menuItemConsole = new MenuItem("Console");
             menuItemConsole.addActionListener(new ActionListener() {
                 @Override
@@ -109,8 +114,7 @@ public class SystemTray {
             popupMenu.add(menuItemExit);
             popupMenu.addSeparator();
             popupMenu.add(menuItemAbout);
-
-            //Image icon = Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/icon.png");
+            
             Image icon = Toolkit.getDefaultToolkit().getImage(com.github.juliansantosinfo.jassocketserver.Main.class.getResource("/resources/media/images/trayicons/icon.png"));
 
             TrayIcon trayIcon = new TrayIcon(icon, "JASWSLauncher Server", popupMenu);
@@ -125,7 +129,12 @@ public class SystemTray {
         }
 
     }
-
+    
+    /**
+     * Add icon to the system tray by using components from the javax.swing 
+     * package. This method is specific for system windows.
+     * @param server 
+     */
     public static void initSystemTraySwing(Server server) {
 
         try {
@@ -133,7 +142,6 @@ public class SystemTray {
             JPopupMenu popupMenu = new JPopupMenu("Menu");
 
             JMenuItem menuItemStart = new JMenuItem("Start");
-            //menuItemStart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/start-icon.png")));
             menuItemStart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/start-icon.png"))));
             menuItemStart.addActionListener(new ActionListener() {
                 @Override
@@ -146,7 +154,6 @@ public class SystemTray {
             });
 
             JMenuItem menuItemStop = new JMenuItem("Stop");
-            //menuItemStop.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/stop-icon.png")));
             menuItemStop.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/stop-icon.png"))));
             menuItemStop.addActionListener(new ActionListener() {
                 @Override
@@ -159,7 +166,6 @@ public class SystemTray {
             });
 
             JMenuItem menuItemClient = new JMenuItem("Client");
-            //menuItemClient.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/client-icon.png")));
             menuItemClient.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/client-icon.png"))));
             menuItemClient.addActionListener(new ActionListener() {
                 @Override
@@ -169,7 +175,6 @@ public class SystemTray {
             });
 
             JMenuItem menuItemConsole = new JMenuItem("Console");
-            //menuItemConsole.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/console-icon.png")));
             menuItemConsole.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/console-icon.png"))));
             menuItemConsole.addActionListener(new ActionListener() {
                 @Override
@@ -179,7 +184,6 @@ public class SystemTray {
             });
 
             JMenuItem menuItemExit = new JMenuItem("Exit Application");
-            //menuItemExit.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/exit-icon.png")));
             menuItemExit.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/exit-icon.png"))));
             menuItemExit.addActionListener(new ActionListener() {
                 @Override
@@ -190,7 +194,6 @@ public class SystemTray {
             });
 
             JMenuItem menuItemExitMenu = new JMenuItem("Exit Menu");
-            //menuItemExitMenu.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/about-icon.png")));
             menuItemExitMenu.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/about-icon.png"))));
             menuItemExitMenu.addActionListener(new ActionListener() {
                 @Override
@@ -214,8 +217,7 @@ public class SystemTray {
             menuItemConsole.setFont(new Font("Impact", Font.ITALIC, 20));
             menuItemExit.setFont(new Font("Impact", Font.ITALIC, 20));
             menuItemExitMenu.setFont(new Font("Impact", Font.ITALIC, 20));
-
-            //Image icon = Toolkit.getDefaultToolkit().getImage("src/resources/media/images/trayicons/systemtray-icon.png");
+            
             Image icon = Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/systemtray-icon.png"));
 
             TrayIcon trayIcon = new TrayIcon(icon, "JASSocketServer Server");

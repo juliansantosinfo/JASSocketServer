@@ -188,8 +188,9 @@ public class Client extends javax.swing.JFrame implements Runnable {
         try {
             // TODO add your handling code here:
             connection = new Socket(jTextFieldIP.getText(), Integer.parseInt(jTextFieldPort.getText()));
-
-            if (connection.isConnected()) {
+            
+            //if (connection.isConnected()) {
+            if (new DataInputStream(connection.getInputStream()).readBoolean()) {
 
                 dis = new DataInputStream(connection.getInputStream());
                 dos = new DataOutputStream(connection.getOutputStream());

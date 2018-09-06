@@ -17,8 +17,11 @@
 package com.github.juliansantosinfo.jassocketserver.server;
 
 import com.github.juliansantosinfo.jassocketserver.connection.ConnectionManager;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,37 +31,67 @@ public class ServerManagerConnection implements Runnable {
 
     private final Server server;
     private Socket connection;
-
+    
+    /**
+     * Constructor
+     * @param server 
+     */
     public ServerManagerConnection(Server server) {
         this.server = server;
     }
-
+    
+    /**
+     * Method to manage new connections.
+     */
     public void waitConnection() {
 
         while (!server.getServerSocket().isClosed()) {
 
             try {
 
-                // Aceita conexao do cliente.
+                // Waiting for client connection.
                 connection = server.getServerSocket().accept();
 
-                // Registra log da conexao no servidor.
-                server.addToLog("ACCEPT NOVA CONEXAO DE " + connection.getInetAddress().getHostName());
+                // Check connection limit.
+                if (server.getConnectionList().size() >= server.getConnectionLimit()) {
+                    
+                    // Send false for client.
+                    new DataOutputStream(connection.getOutputStream()).writeBoolean(false);
+                    
+                    // Terminates requested connection.
+                    connection.close();
 
-                // Cria thread para gerenciar conexao.
-                ConnectionManager connectionManager = new ConnectionManager(server, connection);
-                connectionManager.start();
+                    // Write connection rejection in log file.
+                    server.addToLog("LIMIT OF CONNECTIONS EXCEEDED.");
+                    server.addToLog("REJECTED  CONNECTION OF " + connection.getInetAddress().getHostName());
 
-                // Add connection a lista.
-                server.getConnectionList().add(connectionManager);
+                } else {
+
+                    // Write a new connection to the log file.
+                    server.addToLog("ACCEPT NEW CONNECTION OF " + connection.getInetAddress().getHostName());
+
+                    // ConnectionManager thread instance to manage the connection.
+                    ConnectionManager connectionManager = new ConnectionManager(server, connection);
+                    connectionManager.start();
+
+                    // Add connection to the list.
+                    server.getConnectionList().add(connectionManager);
+                    
+                    // Send true for client.
+                    new DataOutputStream(connection.getOutputStream()).writeBoolean(true);
+                }
 
             } catch (IOException ex) {
+                Logger.getLogger(ServerManagerConnection.class.getName()).log(Level.SEVERE, null, ex);
                 server.addToLog(ex.getMessage().toUpperCase());
             }
         }
 
     }
-
+    
+    /**
+     * Start thread for instance of the class.
+     */
     @Override
     public void run() {
         waitConnection();
