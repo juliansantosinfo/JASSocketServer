@@ -16,35 +16,32 @@
  */
 package com.github.juliansantosinfo.jassocketserver.ui;
 
+import com.github.juliansantosinfo.jassocketserver.client.Client;
 import com.github.juliansantosinfo.jassocketserver.message.Message;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author Julian A. Santos
  */
-public class Client extends javax.swing.JFrame implements Runnable {
+public class ClientUI extends javax.swing.JFrame implements Runnable {
 
-    private Socket connection;
-    private DataInputStream dis;
-    private DataOutputStream dos;
     private Message message;
     private String messageOutput;
+
+    private Client client;
 
     /**
      * Creates new form Cliente
      */
-    public Client() {
+    public ClientUI() {
+
+        client = new Client(this);
+
         initComponents();
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -64,23 +61,23 @@ public class Client extends javax.swing.JFrame implements Runnable {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea = new javax.swing.JTextArea();
+        textAreaOutput = new javax.swing.JTextArea();
         jBtnSend = new javax.swing.JButton();
-        jTextFieldIP = new javax.swing.JTextField();
-        jTextFieldPort = new javax.swing.JTextField();
+        textFieldIP = new javax.swing.JTextField();
+        textFieldPort = new javax.swing.JTextField();
         jBtnConnect = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        labelIP = new javax.swing.JLabel();
+        labelPort = new javax.swing.JLabel();
         jBtnDisconnect = new javax.swing.JButton();
         jBtnExit = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextField = new javax.swing.JTextArea();
+        textFieldInput = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTextArea.setColumns(20);
-        jTextArea.setRows(5);
-        jScrollPane1.setViewportView(jTextArea);
+        textAreaOutput.setColumns(20);
+        textAreaOutput.setRows(5);
+        jScrollPane1.setViewportView(textAreaOutput);
 
         jBtnSend.setText("SEND");
         jBtnSend.setEnabled(false);
@@ -90,9 +87,9 @@ public class Client extends javax.swing.JFrame implements Runnable {
             }
         });
 
-        jTextFieldIP.setText("127.0.0.1");
+        textFieldIP.setText("127.0.0.1");
 
-        jTextFieldPort.setText("27000");
+        textFieldPort.setText("27000");
 
         jBtnConnect.setText("Connect");
         jBtnConnect.addActionListener(new java.awt.event.ActionListener() {
@@ -101,9 +98,9 @@ public class Client extends javax.swing.JFrame implements Runnable {
             }
         });
 
-        jLabel1.setText("IP");
+        labelIP.setText("IP");
 
-        jLabel2.setText("Port");
+        labelPort.setText("Port");
 
         jBtnDisconnect.setText("Disconnect");
         jBtnDisconnect.setEnabled(false);
@@ -120,9 +117,9 @@ public class Client extends javax.swing.JFrame implements Runnable {
             }
         });
 
-        jTextField.setColumns(20);
-        jTextField.setRows(5);
-        jScrollPane2.setViewportView(jTextField);
+        textFieldInput.setColumns(20);
+        textFieldInput.setRows(5);
+        jScrollPane2.setViewportView(textFieldInput);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -135,17 +132,17 @@ public class Client extends javax.swing.JFrame implements Runnable {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(labelIP)
                                 .addGap(175, 175, 175))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jTextFieldIP, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldIP, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addComponent(labelPort)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jBtnConnect)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -163,12 +160,12 @@ public class Client extends javax.swing.JFrame implements Runnable {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                    .addComponent(labelIP)
+                    .addComponent(labelPort))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBtnConnect)
                     .addComponent(jBtnDisconnect)
                     .addComponent(jBtnExit))
@@ -184,123 +181,117 @@ public class Client extends javax.swing.JFrame implements Runnable {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //--------------------------------------------------------------------------
+    // METHODS ACTION PERFORMED
+    //--------------------------------------------------------------------------
+    /**
+     * Set action to connect button.
+     *
+     * @param evt
+     */
     private void jBtnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnConnectActionPerformed
-        try {
-
-            // Variables.
-            boolean connectionStatus;
-
-            // Start connection in server.
-            connection = new Socket(jTextFieldIP.getText(), Integer.parseInt(jTextFieldPort.getText()));
-
-            // Wait return of the server.
-            connectionStatus = new DataInputStream(connection.getInputStream()).readBoolean();
-            
-            // Set interface if connected.
-            if (connection.isConnected() && connectionStatus) {
-
-                dis = new DataInputStream(connection.getInputStream());
-                dos = new DataOutputStream(connection.getOutputStream());
-
-                jTextFieldIP.setEditable(false);
-                jTextFieldPort.setEditable(false);
-                jBtnConnect.setEnabled(false);
-
-                jBtnConnect.setEnabled(false);
-                jBtnDisconnect.setEnabled(true);
-
-                jBtnSend.setEnabled(true);
-                jTextField.setEditable(true);
-
-                jBtnExit.setEnabled(false);
-
-            } else {
-
-                jTextFieldIP.setEditable(true);
-                jTextFieldPort.setEditable(true);
-                jBtnConnect.setEnabled(true);
-
-                jBtnConnect.setEnabled(true);
-                jBtnDisconnect.setEnabled(false);
-
-                jBtnSend.setEnabled(false);
-                jTextField.setEditable(false);
-
-                jBtnExit.setEnabled(true);
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        client.connect(textFieldIP.getText(), Integer.parseInt(textFieldPort.getText()));
     }//GEN-LAST:event_jBtnConnectActionPerformed
 
+    /**
+     * Set action to send button.
+     *
+     * @param evt
+     */
     private void jBtnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSendActionPerformed
-        try {
-            // TODO add your handling code here:
-            messageOutput = "";
-            message = new Message(1, jTextField.getText());
-            message.read();
-
-            Gson gson = new GsonBuilder().create();
-            messageOutput = gson.toJson(message);
-
-            dos.writeUTF(messageOutput);
-            dos.flush();
-
-        } catch (IOException ex) {
-        }
+        client.sendToServer(textFieldInput.getText());
     }//GEN-LAST:event_jBtnSendActionPerformed
 
+    /**
+     * Set action to disconect button.
+     *
+     * @param evt
+     */
     private void jBtnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDisconnectActionPerformed
-        try {
-            // TODO add your handling code here:
-
-            while (!connection.isClosed()) {
-                connection.shutdownInput();
-                connection.shutdownOutput();
-                dis.close();
-                dos.close();
-                connection.close();
-            }
-
-            jTextFieldIP.setEditable(true);
-            jTextFieldPort.setEditable(true);
-            jBtnConnect.setEnabled(true);
-
-            jBtnConnect.setEnabled(true);
-            jBtnDisconnect.setEnabled(false);
-
-            jBtnSend.setEnabled(false);
-            jTextField.setEditable(false);
-
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        client.disconnect();
     }//GEN-LAST:event_jBtnDisconnectActionPerformed
 
+    /**
+     * Set action to exit button.
+     *
+     * @param evt
+     */
     private void jBtnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnExitActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jBtnExitActionPerformed
+
+    //--------------------------------------------------------------------------
+    // METHODS GET AND SET
+    //--------------------------------------------------------------------------
+    /**
+     * Returns the component of the text area.
+     *
+     * @return
+     */
+    public JTextArea getjTextArea() {
+        return textAreaOutput;
+    }
+
+    /**
+     * Set the component of the text area.
+     *
+     * @param jTextArea
+     */
+    public void setjTextArea(JTextArea jTextArea) {
+        this.textAreaOutput = jTextArea;
+    }
+
+    //--------------------------------------------------------------------------
+    // SWING VARIABLES ADDED BY NETBEANS
+    //--------------------------------------------------------------------------
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnConnect;
     private javax.swing.JButton jBtnDisconnect;
     private javax.swing.JButton jBtnExit;
     private javax.swing.JButton jBtnSend;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea;
-    private javax.swing.JTextArea jTextField;
-    private javax.swing.JTextField jTextFieldIP;
-    private javax.swing.JTextField jTextFieldPort;
+    private javax.swing.JLabel labelIP;
+    private javax.swing.JLabel labelPort;
+    private javax.swing.JTextArea textAreaOutput;
+    private javax.swing.JTextField textFieldIP;
+    private javax.swing.JTextArea textFieldInput;
+    private javax.swing.JTextField textFieldPort;
     // End of variables declaration//GEN-END:variables
 
+    //--------------------------------------------------------------------------
+    // METHODS
+    //--------------------------------------------------------------------------
     @Override
     public void run() {
         setVisible(true);
     }
 
+    /**
+     * Defines window behavior when connected to the server.
+     */
+    public void formConnected() {
+        textFieldIP.setEditable(false);
+        textFieldPort.setEditable(false);
+        jBtnConnect.setEnabled(false);
+        jBtnDisconnect.setEnabled(true);
+        jBtnSend.setEnabled(true);
+        textFieldInput.setEditable(true);
+        jBtnExit.setEnabled(false);
+    }
+
+    /**
+     * Defines window behavior when disconnected to the server.
+     */
+    public void formDisconnected() {
+        textFieldIP.setEditable(true);
+        textFieldPort.setEditable(true);
+        jBtnConnect.setEnabled(true);
+        jBtnDisconnect.setEnabled(false);
+        jBtnSend.setEnabled(false);
+        textFieldInput.setEditable(false);
+        jBtnExit.setEnabled(true);
+    }
 }

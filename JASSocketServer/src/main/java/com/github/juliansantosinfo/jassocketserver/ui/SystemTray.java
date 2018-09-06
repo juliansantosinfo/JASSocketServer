@@ -77,7 +77,7 @@ public class SystemTray {
             menuItemClient.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    EventQueue.invokeLater(new Client());
+                    EventQueue.invokeLater(new ClientUI());
                 }
             });
             
@@ -170,7 +170,7 @@ public class SystemTray {
             menuItemClient.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    EventQueue.invokeLater(new Client());
+                    EventQueue.invokeLater(new ClientUI());
                 }
             });
 

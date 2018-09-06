@@ -45,11 +45,19 @@ public class MessageProcessManager implements Runnable {
             while (connectionManager.existMessageInputList()) {
 
                 message = connectionManager.nextMessageInputList();
-
-                messageProcess = gson.toJson(message);
-
-                connectionManager.addMessageOutputList(message);
-                connectionManager.removeMessageInputList();
+                
+                switch (message.getTyprMessage()) {
+                    case 0:
+                        connectionManager.addMessageOutputList(message);
+                        connectionManager.removeMessageInputList();
+                        break;
+                    default:
+                        connectionManager.getServer().addToLog("MESSAGE TYPE INVALID.");
+                        connectionManager.getServer().addToLog("FROM: " + connectionManager.getConnection().getInetAddress().getCanonicalHostName());
+                        connectionManager.getServer().addToLog("CONTEUD: " + gson.toJson(message));
+                        connectionManager.removeMessageInputList();
+                        break;
+                }
 
                 synchronized (connectionManager.getKeyOutputList()) {
                     connectionManager.getKeyOutputList().notifyAll();
