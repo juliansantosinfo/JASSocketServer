@@ -186,11 +186,18 @@ public class Client extends javax.swing.JFrame implements Runnable {
 
     private void jBtnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnConnectActionPerformed
         try {
-            // TODO add your handling code here:
+
+            // Variables.
+            boolean connectionStatus;
+
+            // Start connection in server.
             connection = new Socket(jTextFieldIP.getText(), Integer.parseInt(jTextFieldPort.getText()));
+
+            // Wait return of the server.
+            connectionStatus = new DataInputStream(connection.getInputStream()).readBoolean();
             
-            //if (connection.isConnected()) {
-            if (new DataInputStream(connection.getInputStream()).readBoolean()) {
+            // Set interface if connected.
+            if (connection.isConnected() && connectionStatus) {
 
                 dis = new DataInputStream(connection.getInputStream());
                 dos = new DataOutputStream(connection.getOutputStream());
