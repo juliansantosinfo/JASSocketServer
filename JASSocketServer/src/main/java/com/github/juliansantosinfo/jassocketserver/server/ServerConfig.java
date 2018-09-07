@@ -29,29 +29,27 @@ import org.ini4j.IniPreferences;
  */
 public class ServerConfig {
 
-    private final String pathIniFile = com.github.juliansantosinfo.jassocketserver.Main.ROOT_PATH + "\\classes\\resources\\settings\\SocketServer.ini";
-    private final String pathLogFiles = com.github.juliansantosinfo.jassocketserver.Main.ROOT_PATH +  "\\classes\\resources\\logs/";
-
+    private final String rootPath = com.github.juliansantosinfo.jassocketserver.Main.ROOT_PATH;
+    private final String pathIniFile = rootPath + "\\JASSocketServer.ini";
+    private final File iniFile = new File(pathIniFile);
+    private String pathLogFiles;
     private int port;
     private int connectionLimit;
     private String logPath;
 
-    // CONMTRUCTORS
-    // -----------------------------------------------------------------------
-    public ServerConfig() {
-    }
-
     // GETTERS AND SETTERS
     // -----------------------------------------------------------------------
     /**
+     * Get port connection with server.
      *
-     * @return
+     * @return host port.
      */
     public int getPort() {
         return port;
     }
 
     /**
+     * Set port connection with server.
      *
      * @param port
      */
@@ -60,14 +58,16 @@ public class ServerConfig {
     }
 
     /**
+     * Get limit of clients connected to server.
      *
-     * @return
+     * @return max conextions.
      */
     public int getConnectionLimit() {
         return connectionLimit;
     }
 
     /**
+     * Set limit of clients connected to server.
      *
      * @param connectionLimit
      */
@@ -76,14 +76,16 @@ public class ServerConfig {
     }
 
     /**
+     * Get storage path of the log files.
      *
-     * @return
+     * @return log files path.
      */
     public String getLogPath() {
         return logPath;
     }
 
     /**
+     * Set storage path of the log files.
      *
      * @param logPath
      */
@@ -91,46 +93,108 @@ public class ServerConfig {
         this.logPath = logPath;
     }
 
-    // USER METHODS
+    // OTHERS METHODS
     // -----------------------------------------------------------------------
     /**
+     * Create initialization file.
      *
-     * @return
+     * @return created successfully.
      */
-    public boolean checkFolders() {
-        boolean foldersIsOk = false;
-        return foldersIsOk;
+    public boolean createIniFile() {
+
+        boolean createdSuccessfully = false;
+
+        // Verifies that the file exists.
+        if (!iniFile.exists()) {
+
+            try {
+
+                iniFile.createNewFile();
+
+                Ini ini = new Ini(iniFile);
+
+                // Set SERVER Section.
+                ini.put("SERVER", "port", 1);
+                ini.put("SERVER", "connection_limit", 1000);
+                ini.put("SERVER", "log_path", false);
+
+                // Store sections.
+                ini.store();
+
+                createdSuccessfully = true;
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Failed to create JASServerSocket.ini configuration file!\n" + ex.getMessage(),
+                        "CreateIniFile:Failed",
+                        JOptionPane.ERROR_MESSAGE);
+                createdSuccessfully = false;
+            }
+        }
+
+        return createdSuccessfully;
     }
 
     /**
+     * Load information from the initialization file.
      *
-     * @return
+     * @return loaded successfully.
      */
     public boolean loadIniFile() {
 
-        boolean loadSuccessfully = false;
-        File fileIni = new File(pathIniFile);
+        // Variables.
+        boolean loadedSuccessfully;
+        File fileIni;
 
-        if (!fileIni.exists()) {
+        // Create file structure if it does not exist.
+        checkStructFiles();
 
-        }
+        // Initialize variables.
+        loadedSuccessfully = false;
+        fileIni = new File(pathIniFile);
 
+        // Try load ini file.
         try {
             Preferences ini = new IniPreferences(new Ini(fileIni));
-            port = ini.node("server").getInt("port", 27000);
-            connectionLimit = ini.node("server").getInt("connection_limit", 0);
-            logPath = ini.node("server").get("log_path", pathLogFiles);
+            port = ini.node("SERVER").getInt("port", 27000);
+            connectionLimit = ini.node("SERVER").getInt("connection_limit", 0);
+            logPath = ini.node("SERVER").get("log_path", pathLogFiles);
             logPath = logPath.isEmpty() ? pathLogFiles : logPath;
-            loadSuccessfully = true;
+            loadedSuccessfully = true;
         } catch (IOException ex) {
-            JOptionPane.showConfirmDialog(
+            JOptionPane.showMessageDialog(
                     null,
-                    "Failed to load ServerSocket.ini configuration file!\n" + ex.getMessage(),
+                    "Failed to load JASServerSocket.ini configuration file!\n" + ex.getMessage(),
                     "loadIniFile:Failed",
                     JOptionPane.ERROR_MESSAGE);
-            loadSuccessfully = false;
+            loadedSuccessfully = false;
         }
-        return loadSuccessfully;
+
+        return loadedSuccessfully;
+    }
+
+    /**
+     * Validate file structure for the project. If it does not exist create the
+     * directories and archives.
+     */
+    public void checkStructFiles() {
+
+        File logPath = new File(rootPath + "\\logs\\");
+        File dataPath = new File(rootPath + "\\data\\");
+
+        if (!logPath.exists()) {
+            logPath.mkdir();
+        }
+
+        if (!dataPath.exists()) {
+            dataPath.mkdir();
+        }
+
+        pathLogFiles = logPath.getParent();
+
+        createIniFile();
+
     }
 
 }

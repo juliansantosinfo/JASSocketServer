@@ -37,7 +37,7 @@ public class Main {
         // TODO code application logic here
         new Server();
         
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             new Client().connect("127.0.0.1", 27000);
         }
         
