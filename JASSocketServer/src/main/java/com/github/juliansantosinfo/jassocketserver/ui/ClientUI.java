@@ -41,10 +41,13 @@ public class ClientUI extends javax.swing.JFrame implements Runnable {
         client = new Client(this);
 
         initComponents();
-
+        
+        formDisconnected();
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
+                client.disconnect();
                 Thread.currentThread().interrupt();
             }
         });
@@ -75,6 +78,7 @@ public class ClientUI extends javax.swing.JFrame implements Runnable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        textAreaOutput.setEditable(false);
         textAreaOutput.setColumns(20);
         textAreaOutput.setRows(5);
         jScrollPane1.setViewportView(textAreaOutput);
@@ -275,10 +279,10 @@ public class ClientUI extends javax.swing.JFrame implements Runnable {
     public void formConnected() {
         textFieldIP.setEditable(false);
         textFieldPort.setEditable(false);
+        textFieldInput.setEditable(true);
         jBtnConnect.setEnabled(false);
         jBtnDisconnect.setEnabled(true);
         jBtnSend.setEnabled(true);
-        textFieldInput.setEditable(true);
         jBtnExit.setEnabled(false);
     }
 
@@ -288,10 +292,10 @@ public class ClientUI extends javax.swing.JFrame implements Runnable {
     public void formDisconnected() {
         textFieldIP.setEditable(true);
         textFieldPort.setEditable(true);
+        textFieldInput.setEditable(false);
         jBtnConnect.setEnabled(true);
         jBtnDisconnect.setEnabled(false);
         jBtnSend.setEnabled(false);
-        textFieldInput.setEditable(false);
         jBtnExit.setEnabled(true);
     }
 }

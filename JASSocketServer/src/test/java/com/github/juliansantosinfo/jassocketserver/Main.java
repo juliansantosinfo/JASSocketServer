@@ -36,6 +36,11 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         // TODO code application logic here
         new Server();
+        
+        for (int i = 0; i < 1000; i++) {
+            new Client().connect("127.0.0.1", 27000);
+        }
+        
     }
 
 }

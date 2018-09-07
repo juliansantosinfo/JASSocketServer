@@ -48,6 +48,8 @@ public class MessageProcessManager implements Runnable {
                 
                 switch (message.getTyprMessage()) {
                     case 0:
+                        message.setMessage("MESSAGE PROCESSING BY THE SERVER: \n"
+                        + message.getMessage());
                         connectionManager.addMessageOutputList(message);
                         connectionManager.removeMessageInputList();
                         break;

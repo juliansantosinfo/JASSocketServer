@@ -40,10 +40,10 @@ public class ClientManagerReader implements Runnable {
 
     public ClientManagerReader(Client client) {
         this.client = client;
-        dataInputStream = client.getDis();
+        dataInputStream = client.getDataInputStream();
         gson = new GsonBuilder().create();
     }
-    
+
     /**
      * Start thread for instance of the class.
      */
@@ -55,20 +55,34 @@ public class ClientManagerReader implements Runnable {
             messageInput = "";
 
             try {
+
                 while (dataInputStream.available() > 0) {
                     messageInput = dataInputStream.readUTF();
                 }
-                System.out.println("ENTRE");
+
                 if (!messageInput.isEmpty()) {
 
                     message = gson.fromJson(messageInput, Message.class);
-                    client.getClientUI().getjTextArea().append(message.getMessage());
+                    messageInput = "["
+                            + message.getDate()
+                            + " - "
+                            + message.getHour()
+                            + "] "
+                            + "\n"
+                            + message.getMessage()
+                            + "\n";
+                    client.getClientUI().getjTextArea().append(messageInput);
 
                 }
 
+                Thread.sleep(100);
+
             } catch (IOException ex) {
+                client.setStopThreads(true);
+            } catch (InterruptedException ex) {
                 Logger.getLogger(ClientManagerReader.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
     }
 }

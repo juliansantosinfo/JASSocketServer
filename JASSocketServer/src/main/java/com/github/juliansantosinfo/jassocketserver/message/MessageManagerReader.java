@@ -75,7 +75,12 @@ public class MessageManagerReader implements Runnable {
                         connectionManager.getKeyInputList().notifyAll();
                     }
                 }
+                
+                Thread.sleep(100);
+                
             } catch (IOException ex) {
+                Logger.getLogger(MessageManagerReader.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
                 Logger.getLogger(MessageManagerReader.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

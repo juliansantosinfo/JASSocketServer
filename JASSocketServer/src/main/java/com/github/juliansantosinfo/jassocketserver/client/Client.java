@@ -34,8 +34,8 @@ import java.util.logging.Logger;
 public class Client implements Runnable {
 
     private Socket connection;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
     private Message message;
     private String messageOutput;
     private ClientUI clientUI;
@@ -48,6 +48,12 @@ public class Client implements Runnable {
 
     /**
      * Contructor for instance class Client.
+     */
+    public Client() {
+    }
+
+    /**
+     * * Contructor for instance class Client.
      *
      * @param clientUI
      */
@@ -55,66 +61,148 @@ public class Client implements Runnable {
         this.clientUI = clientUI;
     }
 
+    /**
+     * Get connection socket from the client.
+     *
+     * @return connection socket.
+     */
     public Socket getConnection() {
         return connection;
     }
 
+    /**
+     * Set connection socket for client.
+     *
+     * @param connection
+     */
     public void setConnection(Socket connection) {
         this.connection = connection;
     }
 
-    public DataInputStream getDis() {
-        return dis;
+    /**
+     * Get DataInputStream instance from the socket client.
+     *
+     * @return datainputstream.
+     */
+    public DataInputStream getDataInputStream() {
+        return dataInputStream;
     }
 
-    public void setDis(DataInputStream dis) {
-        this.dis = dis;
+    /**
+     * Set DataInputStream for socket client.
+     *
+     * @param dataInputStream
+     */
+    public void setDataInputStream(DataInputStream dataInputStream) {
+        this.dataInputStream = dataInputStream;
     }
 
-    public DataOutputStream getDos() {
-        return dos;
+    /**
+     * Get DataOutputStream instance from the socket client.
+     *
+     * @return DataOutputStream.
+     */
+    public DataOutputStream getDataOutputStream() {
+        return dataOutputStream;
     }
 
-    public void setDos(DataOutputStream dos) {
-        this.dos = dos;
+    /**
+     * Set DataInputStream for socket client.
+     *
+     * @param dataOutputStream
+     */
+    public void setDataOutputStream(DataOutputStream dataOutputStream) {
+        this.dataOutputStream = dataOutputStream;
     }
 
+    /**
+     * Get Message instance from the client.
+     *
+     * @return message object.
+     */
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * Set Message objeto for client.
+     *
+     * @param message
+     */
     public void setMessage(Message message) {
         this.message = message;
     }
 
+    /**
+     * Get string with client output messagen.
+     *
+     * @return output message.
+     */
     public String getMessageOutput() {
         return messageOutput;
     }
 
+    /**
+     * Set string with client output messagen.
+     *
+     * @param messageOutput
+     */
     public void setMessageOutput(String messageOutput) {
         this.messageOutput = messageOutput;
     }
 
+    /**
+     * Get JFrame with client user interface.
+     *
+     * @return JFrame.
+     */
     public ClientUI getClientUI() {
         return clientUI;
     }
 
+    /**
+     * Set JFrame for client user interface.
+     *
+     * @param clientUI
+     */
     public void setClientUI(ClientUI clientUI) {
         this.clientUI = clientUI;
     }
 
+    /**
+     * Gets status of the variable that controls the stop of the threads.
+     *
+     * @return stopThreads.
+     */
     public boolean isStopThreads() {
         return stopThreads;
     }
 
+    /**
+     * Set status of the variable that controls the stop of the threads.
+     *
+     * @param stopThreads
+     */
     public void setStopThreads(boolean stopThreads) {
         this.stopThreads = stopThreads;
     }
 
+    /**
+     * Get ClientManagerReader instance responsible for reading the messages
+     * received by the socket.
+     *
+     * @return ClientManagerReader.
+     */
     public ClientManagerReader getCmr() {
         return cmr;
     }
 
+    /**
+     * Set ClientManagerReader instance responsible for reading the messages
+     * received by the socket.
+     *
+     * @param cmr
+     */
     public void setCmr(ClientManagerReader cmr) {
         this.cmr = cmr;
     }
@@ -148,8 +236,8 @@ public class Client implements Runnable {
             if (connectionStatus) {
 
                 // Set inputStream and outputStream.
-                dos = new DataOutputStream(connection.getOutputStream());
-                dis = new DataInputStream(connection.getInputStream());
+                dataOutputStream = new DataOutputStream(connection.getOutputStream());
+                dataInputStream = new DataInputStream(connection.getInputStream());
 
                 // Initialize thread for ClientManagerReader.
                 cmr = new ClientManagerReader(this);
@@ -157,16 +245,20 @@ public class Client implements Runnable {
                 tCMR.start();
 
                 // Defines window behavior when connected to the server.
-                clientUI.formConnected();
+                if (clientUI != null) {
+                    clientUI.formConnected();
+                }
 
             } else {
 
                 // Set inputStream and outputStream.
-                dos = null;
-                dis = null;
+                dataOutputStream = null;
+                dataInputStream = null;
 
                 // Defines window behavior when disconnected to the server.
-                clientUI.formConnected();
+                if (clientUI != null) {
+                    clientUI.formDisconnected();
+                }
             }
 
         } catch (IOException ex) {
@@ -186,8 +278,8 @@ public class Client implements Runnable {
         try {
             connection.shutdownInput();
             connection.shutdownOutput();
-            dos.close();
-            dis.close();
+            dataOutputStream.close();
+            dataInputStream.close();
             connection.close();
             connectionStatus = false;
             stopThreads = true;
@@ -195,6 +287,11 @@ public class Client implements Runnable {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        // Set inputStream and outputStream.
+        dataOutputStream = null;
+        dataInputStream = null;
+
+        // Defines window behavior when disconnected to the server.
         clientUI.formDisconnected();
     }
 
@@ -216,8 +313,8 @@ public class Client implements Runnable {
             messageText = gson.toJson(message);
 
             // Sendo to server.
-            dos.writeUTF(messageText);
-            dos.flush();
+            dataOutputStream.writeUTF(messageText);
+            dataOutputStream.flush();
 
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

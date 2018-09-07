@@ -226,12 +226,12 @@ public class ConnectionManager extends Thread {
             while (true) {
 
                 synchronized (this) {
-                    // Aguarda 1 seg. para proxima tentativa de leitura do inputstrean.
-                    wait(2000);
+                    // Aguarda 5 seg. para proxima tentativa de leitura do inputstrean.
+                    wait(5000);
                 }
 
                 // Testa envio via DataOutputStream para verificar conexão.
-                getDataOutputStream().writeBoolean(true);
+                getDataOutputStream().writeUTF("");
 
             }
 
