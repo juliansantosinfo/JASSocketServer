@@ -223,7 +223,7 @@ public class ConnectionManager extends Thread {
 
         try {
 
-            while (true) {
+            while (!stopThreads) {
 
                 synchronized (this) {
                     // Aguarda 5 seg. para proxima tentativa de leitura do inputstrean.
@@ -231,31 +231,41 @@ public class ConnectionManager extends Thread {
                 }
 
                 // Testa envio via DataOutputStream para verificar conexão.
-                getDataOutputStream().writeUTF("");
+                getDataOutputStream().write(0);
 
             }
 
         } catch (IOException | InterruptedException ex) {
-
-            // Ativa variavel de controle de Threads.
-            setStopThreads(true);
-
-            // Acorda Threads em wait.
-            synchronized (getKeyInputList()) {
-                getKeyInputList().notifyAll();
-            }
-
-            // Acorda Threads em wait.
-            synchronized (getKeyOutputList()) {
-                getKeyOutputList().notifyAll();
-            }
-
-            // Remove conexao atual do servidor.
-            server.getConnectionList().remove(this);
-
             // Registra Log.
             getServer().addToLog("CONNECTION TO CLIENT INTERRUPTED WITH MESSAGE: " + ex.getMessage().toUpperCase());
         }
+
+        // Para finaliza conexão.
+        stopConnection();
+
+        // Remove conexao atual do servidor.
+        server.getConnectionList().remove(this);
+
+    }
+
+    /**
+     * Stop connection and threads.
+     */
+    public void stopConnection() {
+
+        // Ativa variavel de controle de Threads.
+        setStopThreads(true);
+
+        // Acorda Threads em wait.
+        synchronized (getKeyInputList()) {
+            getKeyInputList().notifyAll();
+        }
+
+        // Acorda Threads em wait.
+        synchronized (getKeyOutputList()) {
+            getKeyOutputList().notifyAll();
+        }
+
     }
 
 }
