@@ -188,26 +188,6 @@ public class Client implements Runnable {
     }
 
     /**
-     * Get ClientManagerReader instance responsible for reading the messages
-     * received by the socket.
-     *
-     * @return ClientManagerReader.
-     */
-    public ClientManagerReader getCmr() {
-        return cmr;
-    }
-
-    /**
-     * Set ClientManagerReader instance responsible for reading the messages
-     * received by the socket.
-     *
-     * @param cmr
-     */
-    public void setCmr(ClientManagerReader cmr) {
-        this.cmr = cmr;
-    }
-
-    /**
      * Start thread for instance of the class.
      */
     @Override
@@ -241,8 +221,7 @@ public class Client implements Runnable {
 
                 // Initialize thread for ClientManagerReader.
                 cmr = new ClientManagerReader(this);
-                Thread tCMR = new Thread(cmr);
-                tCMR.start();
+                cmr.start();
 
                 // Defines window behavior when connected to the server.
                 if (clientUI != null) {
@@ -276,20 +255,16 @@ public class Client implements Runnable {
     public void disconnect() {
 
         try {
+            stopThreads = true;
             connection.shutdownInput();
             connection.shutdownOutput();
             dataOutputStream.close();
             dataInputStream.close();
             connection.close();
             connectionStatus = false;
-            stopThreads = true;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // Set inputStream and outputStream.
-        dataOutputStream = null;
-        dataInputStream = null;
 
         // Defines window behavior when disconnected to the server.
         clientUI.formDisconnected();

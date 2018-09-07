@@ -114,9 +114,9 @@ public class ServerConfig {
                 Ini ini = new Ini(iniFile);
 
                 // Set SERVER Section.
-                ini.put("SERVER", "port", 1);
+                ini.put("SERVER", "port", 27000);
                 ini.put("SERVER", "connection_limit", 1000);
-                ini.put("SERVER", "log_path", false);
+                ini.put("SERVER", "log_path", "");
 
                 // Store sections.
                 ini.store();
@@ -156,12 +156,18 @@ public class ServerConfig {
 
         // Try load ini file.
         try {
+            
             Preferences ini = new IniPreferences(new Ini(fileIni));
+            
+            
             port = ini.node("SERVER").getInt("port", 27000);
             connectionLimit = ini.node("SERVER").getInt("connection_limit", 0);
             logPath = ini.node("SERVER").get("log_path", pathLogFiles);
+            
             logPath = logPath.isEmpty() ? pathLogFiles : logPath;
+            
             loadedSuccessfully = true;
+            
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(
                     null,
@@ -191,7 +197,7 @@ public class ServerConfig {
             dataPath.mkdir();
         }
 
-        pathLogFiles = logPath.getParent();
+        pathLogFiles = logPath.getPath();
 
         createIniFile();
 

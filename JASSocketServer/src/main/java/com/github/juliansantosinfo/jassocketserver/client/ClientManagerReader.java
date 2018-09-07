@@ -24,26 +24,39 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Julian A. Santos
  */
-public class ClientManagerReader implements Runnable {
+public class ClientManagerReader extends Thread {
 
     private Client client;
     private ConnectionManager connectionManager;
-    private DataInputStream dataInputStream;
     private String messageInput;
     private Message message;
-    private Gson gson;
+    private Gson gson = new GsonBuilder().create();
 
     public ClientManagerReader(Client client) {
         this.client = client;
-        dataInputStream = client.getDataInputStream();
-        gson = new GsonBuilder().create();
+        client.setStopThreads(false);
     }
 
+    // -------------------------------------------------------------------------
+    // METHODS GET AND SET
+    // -------------------------------------------------------------------------
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    // -------------------------------------------------------------------------
+    // METHODS GET AND SET
+    // -------------------------------------------------------------------------
     /**
      * Start thread for instance of the class.
      */
@@ -56,8 +69,8 @@ public class ClientManagerReader implements Runnable {
 
             try {
 
-                while (dataInputStream.available() > 0) {
-                    messageInput = dataInputStream.readUTF();
+                while (client.getDataInputStream().available() > 0) {
+                    messageInput = client.getDataInputStream().readUTF();
                 }
 
                 if (!messageInput.isEmpty()) {
@@ -84,5 +97,6 @@ public class ClientManagerReader implements Runnable {
             }
 
         }
+
     }
 }

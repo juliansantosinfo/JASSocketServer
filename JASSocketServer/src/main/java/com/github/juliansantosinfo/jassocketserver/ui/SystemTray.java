@@ -37,13 +37,16 @@ import javax.swing.JPopupMenu;
 
 /**
  * <code>SystemTray<code> is a class for add icon to the system tray.
+ *
  * @author Julian A. Santos
  */
 public class SystemTray {
-    
+
     /**
-     * Add icon to the system tray by using components from the java.awt package.
-     * @param server 
+     * Add icon to the system tray by using components from the java.awt
+     * package.
+     *
+     * @param server
      */
     public static void initSystemTray(Server server) {
 
@@ -80,12 +83,12 @@ public class SystemTray {
                     EventQueue.invokeLater(new ClientUI());
                 }
             });
-            
+
             MenuItem menuItemConsole = new MenuItem("Console");
             menuItemConsole.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Console console = new Console(server);
+                    new Thread(new Console(server)).start();
                 }
             });
 
@@ -114,8 +117,8 @@ public class SystemTray {
             popupMenu.add(menuItemExit);
             popupMenu.addSeparator();
             popupMenu.add(menuItemAbout);
-            
-            Image icon = Toolkit.getDefaultToolkit().getImage(com.github.juliansantosinfo.jassocketserver.Main.class.getResource("/resources/media/images/trayicons/icon.png"));
+
+            Image icon = Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/systemtray-icon.png"));
 
             TrayIcon trayIcon = new TrayIcon(icon, "JASWSLauncher Server", popupMenu);
             trayIcon.addMouseListener(new MouseAdapter() {
@@ -129,11 +132,12 @@ public class SystemTray {
         }
 
     }
-    
+
     /**
-     * Add icon to the system tray by using components from the javax.swing 
+     * Add icon to the system tray by using components from the javax.swing
      * package. This method is specific for system windows.
-     * @param server 
+     *
+     * @param server
      */
     public static void initSystemTraySwing(Server server) {
 
@@ -217,7 +221,7 @@ public class SystemTray {
             menuItemConsole.setFont(new Font("Impact", Font.ITALIC, 20));
             menuItemExit.setFont(new Font("Impact", Font.ITALIC, 20));
             menuItemExitMenu.setFont(new Font("Impact", Font.ITALIC, 20));
-            
+
             Image icon = Toolkit.getDefaultToolkit().getImage(SystemTray.class.getResource("/resources/media/images/trayicons/systemtray-icon.png"));
 
             TrayIcon trayIcon = new TrayIcon(icon, "JASSocketServer Server");

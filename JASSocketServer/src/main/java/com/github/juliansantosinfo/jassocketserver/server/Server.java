@@ -85,7 +85,7 @@ public class Server extends Thread {
         connectionList = new ArrayList<>();
 
         // Inicia TrayIcon.
-        SystemTray.initSystemTraySwing(this);
+        SystemTray.initSystemTray(this);
 
         // Start Server.
         startServer();
@@ -250,7 +250,7 @@ public class Server extends Thread {
 
     private String createLogFileName() {
 
-        String name = "SocketServer"
+        String name = "\\SocketServer"
                 + "_"
                 + JASDateHour.getDateInFormat("yyyymmdd")
                 + "_"
